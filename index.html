@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+ <head> 
+  <title> rock paper scissor game</title> 
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" /> 
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script> 
+ </head> 
+ <body id="_body_" class="flex flex-col items-center justify-center min-h-screen bg-base-200 p-4"> 
+  <div class="card w-full max-w-sm bg-base-100 shadow-xl p-6 text-center"> 
+   <h1 class="text-3xl font-bold mb-4">Rock, Paper, Scissors</h1> 
+   <!-- Player Choices --> 
+   <p class="mb-4 text-lg">Choose your move:</p> 
+   <div id="player-choices" class="flex justify-center gap-4 mb-6"> 
+    <button id="rock-btn" class="btn btn-outline btn-lg text-4xl p-4">🪨</button> 
+    <button id="paper-btn" class="btn btn-outline btn-lg text-4xl p-4">📄</button> 
+    <button id="scissors-btn" class="btn btn-outline btn-lg text-4xl p-4">✂️</button> 
+   </div> 
+   <!-- Game Output --> 
+   <div id="game-output" class="mb-6 space-y-2 min-h-[100px] flex flex-col justify-center"> 
+    <p>You: <span id="player-display" class="font-semibold">--</span> vs. Comp: <span id="computer-display" class="font-semibold">--</span></p> 
+    <p id="result-display" class="text-2xl font-bold text-accent mt-2">Make your move!</p> 
+   </div> 
+   <!-- Scoreboard --> 
+   <div id="scoreboard" class="flex justify-around text-center p-4 rounded-lg bg-base-200 mb-6"> 
+    <div> 
+     <div class="font-bold text-xl" id="player-score">
+       0 
+     </div> 
+     <div class="text-sm opacity-75">
+       Player 
+     </div> 
+    </div> 
+    <div> 
+     <div class="font-bold text-xl" id="tie-score">
+       0 
+     </div> 
+     <div class="text-sm opacity-75">
+       Ties 
+     </div> 
+    </div> 
+    <div> 
+     <div class="font-bold text-xl" id="computer-score">
+       0 
+     </div> 
+     <div class="text-sm opacity-75">
+       Computer 
+     </div> 
+    </div> 
+   </div> 
+   <!-- Reset Button --> 
+   <button id="reset-btn" class="btn btn-ghost text-error">Reset Score</button> 
+  </div> 
+  <script>
+    // Game state variables
+    let playerScore = 0;
+    let computerScore = 0;
+    let ties = 0;
+
+    // UI element references
+    const playerDisplay = document.getElementById('player-display');
+    const computerDisplay = document.getElementById('computer-display');
+    const resultDisplay = document.getElementById('result-display');
+    const playerScoreDisplay = document.getElementById('player-score');
+    const computerScoreDisplay = document.getElementById('computer-score');
+    const tieScoreDisplay = document.getElementById('tie-score');
+
+    const rockBtn = document.getElementById('rock-btn');
+    const paperBtn = document.getElementById('paper-btn');
+    const scissorsBtn = document.getElementById('scissors-btn');
+    const resetBtn = document.getElementById('reset-btn');
+
+    const choicesMap = { rock: '🪨', paper: '📄', scissors: '✂️' };
+
+    // Main game logic function
+    function playGame(playerChoice) {
+        const computerChoice = getComputerChoice();
+        const winner = determineWinner(playerChoice, computerChoice);
+
+        // Update UI with choices
+        playerDisplay.textContent = choicesMap[playerChoice];
+        computerDisplay.textContent = choicesMap[computerChoice];
+
+        // Update score and result message
+        if (winner === 'player') {
+            playerScore++;
+            resultDisplay.textContent = "You Win! 🎉";
+        } else if (winner === 'computer') {
+            computerScore++;
+            resultDisplay.textContent = "Computer Wins! 😢";
+        } else {
+            ties++;
+            resultDisplay.textContent = "It's a Tie! 🤝";
+        }
+
+        updateScoreboard();
+    }
+
+    // Function to get a random choice for the computer
+    function getComputerChoice() {
+        const choices = ['rock', 'paper', 'scissors'];
+        const randomIndex = Math.floor(Math.random() * choices.length);
+        return choices[randomIndex];
+    }
+
+    // Function to determine the winner
+    function determineWinner(player, computer) {
+        if (player === computer) {
+            return 'tie';
+        }
+        if (
+            (player === 'rock' && computer === 'scissors') ||
+            (player === 'paper' && computer === 'rock') ||
+            (player === 'scissors' && computer === 'paper')
+        ) {
+            return 'player';
+        }
+        return 'computer';
+    }
+
+    // Function to update the scoreboard display
+    function updateScoreboard() {
+        playerScoreDisplay.textContent = playerScore;
+        computerScoreDisplay.textContent = computerScore;
+        tieScoreDisplay.textContent = ties;
+    }
+
+    // Function to reset the game state and UI
+    function resetGame() {
+        playerScore = 0;
+        computerScore = 0;
+        ties = 0;
+        updateScoreboard();
+        resultDisplay.textContent = "Make your move!";
+        playerDisplay.textContent = '--';
+        computerDisplay.textContent = '--';
+    }
+
+    // --- Event Listeners ---
+    rockBtn.addEventListener('click', () => playGame('rock'));
+    paperBtn.addEventListener('click', () => playGame('paper'));
+    scissorsBtn.addEventListener('click', () => playGame('scissors'));
+    resetBtn.addEventListener('click', resetGame);
+
+    // Initialize scoreboard on load
+    updateScoreboard();
+  </script>  
+ </body>
+</html>
